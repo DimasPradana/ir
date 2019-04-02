@@ -25,6 +25,7 @@ class HomeController extends Controller
                'npwpd.npwpd as nomor_npwpd',
                'npwpd.namawp as wajib_pajak',
                'npwpd.alamatwp as alamat_wajib_pajak',
+               'sptpd.jumlahpajak as ketetapan',
                'payment.total as terbayar',
                'skp.masa1 as masa_1',
                'skp.masa2 as masa_2',

@@ -10,14 +10,11 @@ class HomeController extends Controller
 {
     //
 
-    public function first($dateStart = null, $dateEnd = null ){
-        //
-        //$now = Carbon::today()->toDateString();
-        $link = url()->current();
-        $urls = explode("/",$link);
-        $sDate = date("Y-m-d", strtotime($urls[5]));
-        $eDate = date("Y-m-d", strtotime($urls[6]));
+    public function first(){
+    //public function index(){
+        $now = Carbon::today()->toDateString();
 
+        //$data = db::table('skp')
         $data = db::connection('mysql')
             ->table('skp')
             ->select(
@@ -25,6 +22,7 @@ class HomeController extends Controller
                'skp.tglbayar as tanggal_bayar',
                //'skp.nomor_skprd as nomor_skprd',
                //'skp.dataentri as data_entri',
+               'npwpd.npwpd as npwpd',
                'npwpd.namawp as wajib_pajak',
                'npwpd.alamatwp as alamat_wajib_pajak',
                //'sptpd.keteranganpajak as uraian',
@@ -37,8 +35,8 @@ class HomeController extends Controller
                //'skp.lunas as lunas',
                //'tarif_dasar_pajak.noid as tdp_id',
                'tarif_dasar_pajak.obyekpajak as nama_rekening',
-               'npwpd.Status_izin as status_izin'
                //'tarif_dasar_pajak.rekeninginduk as kode_rekening'
+               'npwpd.Status_izin as status_izin'
             )
             ->leftjoin('payment','payment.pengesahan', '=', 'skp.pengesahan')
             ->leftjoin('sptpd','sptpd.noid', '=', 'skp.nomor_sptpd')
@@ -48,11 +46,10 @@ class HomeController extends Controller
                 ['skp.keterangan','=','0'],
                 ['skp.aktif','=','1'],
             ])
-            ->wherebetween('skp.tanggalentri',[$sDate,$eDate])
+            ->wherebetween('skp.tanggalentri',['2019-01-01',$now])
             ->get();
             //dd($data);
 
-        //echo $sDate;
         return response()->json($data);
     }
 
@@ -775,25 +772,46 @@ class HomeController extends Controller
         return response()->json($banyuputih);
     }
 
-    public function IRbphtb($pilihan){
+    public function IRbphtb(){
 
-        if($pilihan == 'kecamatan'){
-            $result = DB::connection('mysql2')
-                ->table('rekap_kecamatan')
-                ->get();
-                //dd($result[0]);
-                //var_dump($result);
-                //var_dump($result->getBindings());
-        }elseif($pilihan == 'ppat'){
-            $result = DB::connection('mysql2')
-                ->table('rekap_ppat')
-                ->get();
-                //dd($result[0]);
-                //var_dump($result);
-                //var_dump($result->getBindings());
-        }else{
-            $result = 'sorry, nothing to show';
-        }
+        //$data2 = db::connection('mysql2')
+            //->select(
+               //'skp.tanggalentri as tanggal_entri',
+               //'skp.tglbayar as tanggal_bayar',
+               //'skp.nomor_skprd as nomor_skprd',
+               //'skp.dataentri as data_entri',
+               //'npwpd.namawp as wajib_pajak',
+               //'npwpd.alamatwp as alamat_wajib_pajak',
+               //'sptpd.keteranganpajak as uraian',
+               //'sptpd.jumlahpajak as ketetapan',
+               //'payment.total as terbayar',
+               //'skp.penyetor as penyetor',
+               //'skp.masa1 as masa_1',
+               //'skp.masa2 as masa_2',
+               //'sptpd.jenispajak',
+               //'skp.lunas as lunas',
+               //'tarif_dasar_pajak.noid as tdp_id',
+               //'tarif_dasar_pajak.obyekpajak as nama_rekening',
+               //'tarif_dasar_pajak.rekeninginduk as kode_rekening'
+            //)
+            //->leftjoin('payment','payment.pengesahan', '=', 'skp.pengesahan')
+            //->leftjoin('sptpd','sptpd.noid', '=', 'skp.nomor_sptpd')
+            //->leftjoin('tarif_dasar_pajak','sptpd.obyekpajak', '=', 'tarif_dasar_pajak.noid')
+            //->leftjoin('npwpd','sptpd.npwpd', '=', 'npwpd.npwpd')
+            //->where([
+                //['skp.keterangan','=','0'],
+                //['skp.aktif','=','1'],
+            //])
+            //->wherebetween('skp.tanggalentri',['2019-03-10','2019-03-11'])
+        $result = DB::connection('mysql2')
+            ->table('rekap')
+            //->select('ketetapan','nom_ketetapan','terbayar','nom_terbayar')
+            //->toSql();
+            ->get();
+            //dd($result[0]);
+            //var_dump($result);
+            //var_dump($result->getBindings());
+
         return response()->json($result);
     }
 }
