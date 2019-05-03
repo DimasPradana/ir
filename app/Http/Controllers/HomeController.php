@@ -40,11 +40,12 @@ class HomeController extends Controller
             ->leftjoin('tarif_dasar_pajak','sptpd.obyekpajak', '=', 'tarif_dasar_pajak.noid')
             ->leftjoin('npwpd','sptpd.npwpd', '=', 'npwpd.npwpd')
             ->where([
-                ['skp.keterangan','=','0'],
-                ['skp.aktif','=','1'],
+                ['skp.keterangan','=',0],
+                ['skp.aktif','=',1],
             ])
             ->wherebetween('skp.tanggalentri',[$sDate,$eDate])
             ->get();
+            //->toSql();
 
         return response()->json($data);
     }
